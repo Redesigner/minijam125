@@ -1,14 +1,51 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Objects/Actors/TurnBased/TurnBasedActor.cs" type="Script" id=1]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnQueue.cs" type="Script" id=2]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnBasedPlayer.cs" type="Script" id=3]
+[ext_resource path="res://Objects/Actors/TurnBased/TurnAction.cs" type="Script" id=4]
+[ext_resource path="res://Sounds/KickSound.wav" type="AudioStream" id=5]
+[ext_resource path="res://Sounds/TriangleSound.wav" type="AudioStream" id=6]
+[ext_resource path="res://Sounds/KickDrum.wav" type="AudioStream" id=7]
 
 [node name="TurnQueue" type="Node2D"]
 script = ExtResource( 2 )
 
-[node name="Actor2" type="Node2D" parent="."]
+[node name="Player1" type="Node2D" parent="."]
 script = ExtResource( 3 )
 
-[node name="Actor1" type="Node2D" parent="."]
+[node name="Kick" type="Node" parent="Player1"]
+script = ExtResource( 4 )
+BeatsPerMeasure = 8
+_soundEffect = ExtResource( 5 )
+
+[node name="Wait" type="Node" parent="Player1"]
+script = ExtResource( 4 )
+
+[node name="Player2" type="Node2D" parent="."]
+script = ExtResource( 3 )
+
+[node name="Punch" type="Node" parent="Player2"]
+script = ExtResource( 4 )
+BeatsPerMeasure = 2
+_soundEffect = ExtResource( 6 )
+
+[node name="Wait" type="Node" parent="Player2"]
+script = ExtResource( 4 )
+
+[node name="Player3" type="Node2D" parent="."]
+script = ExtResource( 3 )
+
+[node name="Slash" type="Node" parent="Player3"]
+script = ExtResource( 4 )
+BeatsPerMeasure = 4
+_soundEffect = ExtResource( 7 )
+
+[node name="Wait" type="Node" parent="Player3"]
+script = ExtResource( 4 )
+
+[node name="Enemy1" type="Node2D" parent="."]
 script = ExtResource( 1 )
+
+[node name="Wait" type="Node" parent="Enemy1"]
+script = ExtResource( 4 )

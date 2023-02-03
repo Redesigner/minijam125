@@ -8,7 +8,14 @@ public class TurnBasedActor : Node2D
 
     public override void _Ready()
     {
-        _pendingAction = new TurnAction("Do nothing.");
+        foreach (Node child in GetChildren())
+        {
+            if (child is TurnAction)
+            {
+                _pendingAction = (TurnAction) child;
+                return;
+            }
+        }
     }
 
     public virtual void SetActionForTurn()

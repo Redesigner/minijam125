@@ -4,13 +4,21 @@ using System.Collections.Generic;
 
 public class TurnBasedPlayer : TurnBasedActor
 {
-    private List<TurnAction> _availableActions;
+    private List<TurnAction> _availableActions = new List<TurnAction>();
     private bool _awaitingInput = false;
 
     public override void _Ready()
     {
         base._Ready();
-        _availableActions = new List<TurnAction>{ new TurnAction("Kick"), new TurnAction("Punch") };
+        // _availableActions = new List<TurnAction>{ new TurnAction("Kick"), new TurnAction("Punch", 2) };
+        foreach (Node node in GetChildren())
+        {
+            if (node is TurnAction)
+            {
+                TurnAction action = (TurnAction) node;
+                _availableActions.Add(action);
+            }
+        }
     }
 
     public override void SetActionForTurn()
@@ -18,7 +26,7 @@ public class TurnBasedPlayer : TurnBasedActor
         String message = "Please choose an action";
         for (int i = 0; i < _availableActions.Count; i++)
         {
-            message += $" {i + 1}: {_availableActions[i].ActionName}";
+            message += $" {i + 1}: {_availableActions[i].Name}";
             if (i < _availableActions.Count - 1)
             {
                 message += ", ";
@@ -47,7 +55,9 @@ public class TurnBasedPlayer : TurnBasedActor
         if (numKeyPressed > 0 && numKeyPressed <= _availableActions.Count)
         {
             SetUpcomingAction(_availableActions[(int) numKeyPressed - 1]);
+            GD.Print(numKeyPressed);
             EmitSignal("ActionReady");
+            _awaitingInput = false;
         }
     }
 }
