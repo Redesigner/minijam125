@@ -1,6 +1,8 @@
 [gd_resource type="Theme" load_steps=2 format=2]
 
-[ext_resource path="res://Fonts/Nunito-Regular.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Fonts/Nunito-Regular-24.tres" type="DynamicFont" id=1]
 
 [resource]
+default_font = ExtResource( 1 )
 Label/fonts/font = ExtResource( 1 )
+Tree/fonts/font = ExtResource( 1 )

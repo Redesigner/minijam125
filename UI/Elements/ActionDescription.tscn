@@ -1,0 +1,67 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://UI/Styles/DefaultTheme.tres" type="Theme" id=1]
+[ext_resource path="res://UI/Elements/ActionDescription.cs" type="Script" id=2]
+[ext_resource path="res://Fonts/Nunito-Regular-16.tres" type="DynamicFont" id=3]
+
+[sub_resource type="Gradient" id=1]
+interpolation_mode = 2
+offsets = PoolRealArray( 0.0223464, 1 )
+colors = PoolColorArray( 0.207843, 0.192157, 0.215686, 1, 0.2592, 0.2376, 0.27, 1 )
+
+[sub_resource type="GradientTexture2D" id=2]
+gradient = SubResource( 1 )
+width = 128
+height = 128
+fill_from = Vector2( 0, 1 )
+fill_to = Vector2( 0, 0 )
+
+[node name="Popup" type="Control"]
+margin_right = 468.0
+margin_bottom = 289.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+_titlePath = NodePath("ColorRect/GradientFill/NameLabel")
+_descriptionPath = NodePath("ColorRect/GradientFill/ColorRect/DescriptionLabel")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+color = Color( 0.168627, 0.156863, 0.176471, 1 )
+
+[node name="GradientFill" type="TextureRect" parent="ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 2.0
+margin_top = 2.0
+margin_right = -2.0
+margin_bottom = -2.0
+theme = ExtResource( 1 )
+texture = SubResource( 2 )
+expand = true
+
+[node name="NameLabel" type="Label" parent="ColorRect/GradientFill"]
+margin_left = 10.0
+margin_top = 10.0
+text = "Punch"
+
+[node name="ColorRect" type="ColorRect" parent="ColorRect/GradientFill"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 60.0
+margin_right = -10.0
+margin_bottom = -10.0
+color = Color( 0.113373, 0.105743, 0.117188, 1 )
+
+[node name="DescriptionLabel" type="Label" parent="ColorRect/GradientFill/ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
+custom_fonts/font = ExtResource( 3 )
+text = "The punch attack does stuff to the enemy."
+autowrap = true

@@ -15,6 +15,9 @@ public class TurnBasedActor : Node2D
 
     private AnimatedSprite _sprite;
 
+    private int _incomingDamage = 0;
+    private int _incomingHits = 0;
+
     [Export] public bool IsEnemy = false;
     [Export] private List<PackedScene> _defaultActions = new List<PackedScene>();
 
@@ -71,6 +74,11 @@ public class TurnBasedActor : Node2D
         EmitSignal("TargetReady");
     }
 
+    public TurnBasedActor GetPendingTarget()
+    {
+        return _pendingTarget;
+    }
+
     public void SetIdle()
     {
         if (_sprite.Animation == "default")
@@ -81,7 +89,7 @@ public class TurnBasedActor : Node2D
         _sprite.Play();
     }
 
-    protected void SetUpcomingAction(TurnAction action)
+    public void SetUpcomingAction(TurnAction action)
     {
         _pendingAction = action;
     }
@@ -101,6 +109,30 @@ public class TurnBasedActor : Node2D
         _availableTargets = targets;
     }
 
+    public void TakeAllIncomingDamage()
+    {
+        if (_incomingDamage == 0)
+        {
+            return;
+        }
+        String damageText = "" + _incomingDamage;
+
+        if (_incomingHits > 1)
+        {
+            int multiplier = (int)Math.Pow(2, _incomingHits - 1);
+            damageText += (" x" + multiplier);
+        }
+        _incomingDamage = 0;
+        _incomingHits = 0;
+
+        PopupText(damageText);
+    }
+    public void AccumulateDamage(int damage)
+    {
+        _incomingDamage += damage;
+        _incomingHits++;
+    }
+
     public void PopupText(String text)
     {
         TextPopup popup = (TextPopup) _textPopupScene.Instance();
@@ -109,5 +141,10 @@ public class TurnBasedActor : Node2D
         Vector2 spriteSize = _sprite.Frames.GetFrame("default", 0).GetSize();
         Vector2 textSize = popup.GetNode<Label>("Label").RectSize;
         popup.RectPosition = new Vector2(-textSize.x / 2.0f, -textSize.y - spriteSize.y / 2.0f);
+    }
+
+    public List<TurnAction> GetActions()
+    {
+        return _availableActions;
     }
 }

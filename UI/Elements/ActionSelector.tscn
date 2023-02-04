@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://UI/Styles/DefaultTheme.tres" type="Theme" id=1]
+[ext_resource path="res://UI/Elements/ActionSelector.cs" type="Script" id=2]
+[ext_resource path="res://UI/Elements/ActionDescription.tscn" type="PackedScene" id=3]
+
+[node name="Panel" type="Panel"]
+margin_right = 600.0
+margin_bottom = 350.0
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="Tree" type="Tree" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = -20.0
+margin_bottom = -20.0
+hide_folding = true
+hide_root = true
+
+[node name="Popup" parent="." instance=ExtResource( 3 )]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 300.0
+margin_bottom = 0.0
+
+[connection signal="item_selected" from="Tree" to="." method="_onTreeItemSelected"]
+[connection signal="nothing_selected" from="Tree" to="." method="_onTreeNothingSelected"]

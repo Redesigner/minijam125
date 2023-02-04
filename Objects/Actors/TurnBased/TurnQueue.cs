@@ -16,10 +16,13 @@ public class TurnQueue : Node2D
     private Godot.Collections.Array<TurnBasedActor> _heroes = new Godot.Collections.Array<TurnBasedActor>();
     private Godot.Collections.Array<TurnBasedActor> _enemies = new Godot.Collections.Array<TurnBasedActor>();
 
+    [Export] private NodePath _actionSelectorPath;
+    private ActionSelector _actionSelector;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        _actionSelector = GetNode<ActionSelector>(_actionSelectorPath);
         _bpmTimeRatio = (float) BPM / 60.0f;
         GD.Print("Press 'Space' to begin your turn.");
 
@@ -56,11 +59,6 @@ public class TurnQueue : Node2D
                 TurnAction track = actor.GetUpcomingAction();
                 if (DidBeatOccur(track))
                 {
-                    if (!didEnemyBlock && actionsThisBeat.Count > 0)
-                    {
-                        actionsThisBeat.Clear();
-                        didEnemyBlock = true;
-                    }
                     actionsThisBeat.Add(track);
                     track.BeatsToPlay.RemoveAt(0);
                 }
@@ -79,13 +77,19 @@ public class TurnQueue : Node2D
             foreach (TurnAction action in actionsThisBeat)
             {
                 action.PlayBeat();
+                action.Target.AccumulateDamage(action.DamagePerHit);
             }
 
-            if (didEnemyBlock)
+            foreach (TurnBasedActor actor in _heroes)
             {
-                GD.Print("Enemy blocked attacks on this beat.");
+                actor.TakeAllIncomingDamage();
             }
-            else if (actionsThisBeat.Count > 0)
+            foreach (TurnBasedActor actor in _enemies)
+            {
+                actor.TakeAllIncomingDamage();
+            }
+
+            if (actionsThisBeat.Count > 0)
             {
                 GD.Print(String.Join(", ", actionsThisBeat));
             }
@@ -94,6 +98,7 @@ public class TurnQueue : Node2D
             {
                 GD.Print("Finished playing attacks.");
                 _playing = false;
+                _awaitingActions = false;
                 _currentTime = 0.0f;
             }
         }
@@ -112,31 +117,30 @@ public class TurnQueue : Node2D
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);
-        if (@event.IsActionPressed("StartTurn") && !_playing)
+        if (@event.IsActionPressed("StartTurn") && !_playing && !_awaitingActions)
         {
+            _awaitingActions = true;
             GetActionsForEachActor();
-        }
-        if (_awaitingTarget)
-        {
-
         }
     }
 
     public async void GetActionsForEachActor()
     {
-        if (_awaitingActions)
-        {
-            return;
-        }
-
         foreach (TurnBasedActor turnBasedActor in _heroes)
         {
-            turnBasedActor.CallDeferred("SetActionForTurn");
-            await ToSignal(turnBasedActor, "ActionReady");
+            _actionSelector.SetActionList(turnBasedActor.GetActions());
+            _actionSelector.SetFocus(true);
+            // turnBasedActor.CallDeferred("SetActionForTurn");
+            // await ToSignal(turnBasedActor, "ActionReady");
+            await ToSignal(_actionSelector, "ActionReady");
+            _actionSelector.SetFocus(false);
+            _actionSelector.ClearSelection();
+            turnBasedActor.SetUpcomingAction(_actionSelector.GetSelectedAction());
             turnBasedActor.SetAvailableTargets(GetTargets(true));
             turnBasedActor.CallDeferred("SetTargetForTurn");
             await ToSignal(turnBasedActor, "TargetReady");
 
+            turnBasedActor.GetUpcomingAction().Target = turnBasedActor.GetPendingTarget();
             turnBasedActor.GetUpcomingAction().RefreshBeats();
         }
 

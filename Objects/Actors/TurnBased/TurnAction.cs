@@ -5,7 +5,7 @@ using System.Collections.Generic;
 // A class containing the data for each character's behavior on any given turn.
 public class TurnAction : Node
 {
-    // [Export] public String ActionName;
+    [Export] public String Description;
     [Export] public int BeatsPerMeasure;
     [Export] private AudioStream _soundEffect;
     [Export] private String _beatPattern = "";
@@ -17,6 +17,7 @@ public class TurnAction : Node
 
     private AudioStreamPlayer _audioPlayer;
     private TurnBasedActor _actor;
+    public TurnBasedActor Target;
 
     public override void _Ready()
     {
@@ -59,7 +60,7 @@ public class TurnAction : Node
     public void PlayBeat()
     {
         _audioPlayer.Play();
-        _actor.PopupText("" + DamagePerHit);
+        // _actor.PopupText("" + DamagePerHit);
         if (AnimationName != null)
         {
             _actor.GetNode<AnimatedSprite>("AnimatedSprite").Animation = AnimationName;
