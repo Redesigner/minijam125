@@ -4,6 +4,7 @@ using System;
 public class TurnBasedActor : Node2D
 {
     private TurnAction _pendingAction;
+    [Export] public bool IsEnemy = false;
     [Signal] public delegate void ActionReady();
 
     public override void _Ready()

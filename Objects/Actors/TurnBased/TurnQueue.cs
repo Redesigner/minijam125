@@ -13,6 +13,7 @@ public class TurnQueue : Node2D
     private float _bpmTimeRatio = 1.0f;
 
     private Godot.Collections.Array<TurnAction> _tracks = new Godot.Collections.Array<TurnAction>();
+    private Godot.Collections.Array<TurnAction> _enemyTracks = new Godot.Collections.Array<TurnAction>();
 
 
     // Called when the node enters the scene tree for the first time.
@@ -29,22 +30,42 @@ public class TurnQueue : Node2D
         if (_playing)
         {
             _currentTime += delta * _bpmTimeRatio;
-
-            String beatResult = "";
-            bool playedSound = false;
+            bool didEnemyBlock = false;
+            Godot.Collections.Array<TurnAction> actionsThisBeat = new Godot.Collections.Array<TurnAction>();
             foreach (TurnAction track in _tracks)
             {
                 if (track.BeatsToPlay.Count > 0 && track.BeatsToPlay[0] <= _currentTime)
                 {
-                    playedSound = true;
-                    track.PlayBeat();
-                    beatResult += $"*{track.Name}* ";
+                    actionsThisBeat.Add(track);
                     track.BeatsToPlay.RemoveAt(0);
                 }
             }
-            if (playedSound)
+            foreach (TurnAction track in _enemyTracks)
             {
-                GD.Print(beatResult);
+                if (track.BeatsToPlay.Count > 0 && track.BeatsToPlay[0] <= _currentTime)
+                {
+                    if (!didEnemyBlock)
+                    {
+                        actionsThisBeat.Clear();
+                        didEnemyBlock = true;
+                    }
+                    actionsThisBeat.Add(track);
+                    track.BeatsToPlay.RemoveAt(0);
+                }
+            }
+
+            foreach (TurnAction action in actionsThisBeat)
+            {
+                action.PlayBeat();
+            }
+
+            if (didEnemyBlock)
+            {
+                GD.Print("Enemy blocked attacks on this beat.");
+            }
+            else if (actionsThisBeat.Count > 0)
+            {
+                GD.Print(String.Join(", ", actionsThisBeat));
             }
 
             if (_currentTime >= 4.0f)
@@ -103,9 +124,16 @@ public class TurnQueue : Node2D
         _tracks.Clear();
         foreach (Node actor in GetChildren())
         {
-            TurnBasedActor turnBasedActor = (TurnBasedActor)actor;
+            TurnBasedActor turnBasedActor = (TurnBasedActor) actor;
             TurnAction action = turnBasedActor.GetUpcomingAction();
-            _tracks.Add(action);
+            if (turnBasedActor.IsEnemy)
+            {
+                _enemyTracks.Add(action);
+            }
+            else
+            {
+                _tracks.Add(action);
+            }
             action.RefreshBeats();
         }
     }

@@ -8,6 +8,8 @@ public class TurnAction : Node
     // [Export] public String ActionName;
     [Export] public int BeatsPerMeasure;
     [Export] private AudioStream _soundEffect;
+    [Export] private String _beatPattern = "";
+    [Export] public int DamagePerHit = 1;
 
     private List<float> _beats;
     public List<float> BeatsToPlay;
@@ -43,12 +45,22 @@ public class TurnAction : Node
         {
             return;
         }
-        float noteLength = 4.0f / (float) BeatsPerMeasure;
+        float noteLength = 4.0f / (float)BeatsPerMeasure;
 
+        int beatIndex = 0;
         for (float i = 0; i < 4.0f; i += noteLength)
         {
-            _beats.Add(i);
+            if (_beatPattern.Length - 1 >= beatIndex && _beatPattern[beatIndex] == 'x')
+            {
+                _beats.Add(i);
+            }
+            beatIndex++;
         }
+    }
+
+    private void ParseBeatString()
+    {
+
     }
 
     public void RefreshBeats()
@@ -61,5 +73,10 @@ public class TurnAction : Node
     {
         // GD.Print($"*{Name}*");
         _audioPlayer.Play();
+    }
+
+    public override String ToString()
+    {
+        return $"*{Name}*";
     }
 }

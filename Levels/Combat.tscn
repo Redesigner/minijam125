@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://Objects/Actors/TurnBased/TurnBasedActor.cs" type="Script" id=1]
+[ext_resource path="res://Objects/Actors/TurnBased/TBEnemy.cs" type="Script" id=1]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnQueue.cs" type="Script" id=2]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnBasedPlayer.cs" type="Script" id=3]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnAction.cs" type="Script" id=4]
@@ -18,6 +18,7 @@ script = ExtResource( 3 )
 script = ExtResource( 4 )
 BeatsPerMeasure = 8
 _soundEffect = ExtResource( 5 )
+_beatPattern = "xxxxxxx-"
 
 [node name="Wait" type="Node" parent="Player1"]
 script = ExtResource( 4 )
@@ -27,8 +28,9 @@ script = ExtResource( 3 )
 
 [node name="Punch" type="Node" parent="Player2"]
 script = ExtResource( 4 )
-BeatsPerMeasure = 2
+BeatsPerMeasure = 4
 _soundEffect = ExtResource( 6 )
+_beatPattern = "-x-x"
 
 [node name="Wait" type="Node" parent="Player2"]
 script = ExtResource( 4 )
@@ -40,12 +42,21 @@ script = ExtResource( 3 )
 script = ExtResource( 4 )
 BeatsPerMeasure = 4
 _soundEffect = ExtResource( 7 )
+_beatPattern = "xxxx"
 
 [node name="Wait" type="Node" parent="Player3"]
 script = ExtResource( 4 )
 
 [node name="Enemy1" type="Node2D" parent="."]
 script = ExtResource( 1 )
+IsEnemy = true
 
-[node name="Wait" type="Node" parent="Enemy1"]
+[node name="Attack1" type="Node" parent="Enemy1"]
 script = ExtResource( 4 )
+BeatsPerMeasure = 4
+_beatPattern = "x---"
+
+[node name="Attack2" type="Node" parent="Enemy1"]
+script = ExtResource( 4 )
+BeatsPerMeasure = 4
+_beatPattern = "--x-"
