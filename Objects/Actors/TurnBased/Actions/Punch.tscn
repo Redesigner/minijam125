@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Sounds/TriangleSound.wav" type="AudioStream" id=1]
+[ext_resource path="res://Objects/Actors/TurnBased/TurnAction.cs" type="Script" id=2]
+
+[node name="Punch" type="Node"]
+script = ExtResource( 2 )
+BeatsPerMeasure = 4
+_soundEffect = ExtResource( 1 )
+_beatPattern = "-x-x"
+DamagePerHit = 4
+AnimationName = "attack"

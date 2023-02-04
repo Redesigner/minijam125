@@ -4,22 +4,8 @@ using System.Collections.Generic;
 
 public class TurnBasedPlayer : TurnBasedActor
 {
-    private List<TurnAction> _availableActions = new List<TurnAction>();
     private bool _awaitingInput = false;
-
-    public override void _Ready()
-    {
-        base._Ready();
-        // _availableActions = new List<TurnAction>{ new TurnAction("Kick"), new TurnAction("Punch", 2) };
-        foreach (Node node in GetChildren())
-        {
-            if (node is TurnAction)
-            {
-                TurnAction action = (TurnAction) node;
-                _availableActions.Add(action);
-            }
-        }
-    }
+    private bool _awaitingTarget = false;
 
     public override void SetActionForTurn()
     {
@@ -35,13 +21,31 @@ public class TurnBasedPlayer : TurnBasedActor
         GD.Print(message);
         _awaitingInput = true;
     }
+    public override void SetTargetForTurn()
+    {
+        if (_availableTargets.Count <= 0)
+        {
+            GD.Print("No targets to choose from.");
+            base.SetTargetForTurn();
+            return;
+        }
+
+        String message = "Please choose a target";
+        for (int i = 0; i < _availableTargets.Count; i++)
+        {
+            message += $" {i + 1}: {_availableTargets[i].Name}";
+            if (i < _availableTargets.Count - 1)
+            {
+                message += ", ";
+            }
+        }
+        GD.Print(message);
+        _awaitingTarget = true;
+    }
 
     public override void _Input(InputEvent @event)
     {
-        if (!_awaitingInput)
-        {
-            return;
-        }
+
         if (!(@event is InputEventKey))
         {
             return;
@@ -52,12 +56,30 @@ public class TurnBasedPlayer : TurnBasedActor
             return;
         }
         uint numKeyPressed = inputEventKey.Scancode - 48;
-        if (numKeyPressed > 0 && numKeyPressed <= _availableActions.Count)
+        HandleRequestedInput(numKeyPressed);
+    }
+
+    private void HandleRequestedInput(uint scanCode)
+    {
+        if (_awaitingInput)
         {
-            SetUpcomingAction(_availableActions[(int) numKeyPressed - 1]);
-            GD.Print(numKeyPressed);
-            EmitSignal("ActionReady");
-            _awaitingInput = false;
+            if (scanCode > 0 && scanCode <= _availableActions.Count)
+            {
+                SetUpcomingAction(_availableActions[(int) scanCode - 1]);
+                EmitSignal("ActionReady");
+                _awaitingInput = false;
+                return;
+            }
+        }
+        if (_awaitingTarget)
+        {
+            if (scanCode > 0 && scanCode <= _availableTargets.Count)
+            {
+                SetUpcomingTarget(_availableTargets[(int)scanCode - 1]);
+                EmitSignal("TargetReady");
+                _awaitingTarget = false;
+                return;
+            }
         }
     }
 }

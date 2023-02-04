@@ -10,32 +10,24 @@ public class TurnAction : Node
     [Export] private AudioStream _soundEffect;
     [Export] private String _beatPattern = "";
     [Export] public int DamagePerHit = 1;
+    [Export] public String AnimationName;
 
     private List<float> _beats;
-    public List<float> BeatsToPlay;
+    public List<float> BeatsToPlay = new List<float>();
 
     private AudioStreamPlayer _audioPlayer;
-    /* public TurnAction(String actionName)
-    {
-        ActionName = actionName;
-        BeatsPerMeasure = 4;
-        _beats = new List<float> {0, 1, 2, 3};
-    }
-
-    public TurnAction(String actionName, int beatsPerMeasure)
-    {
-        ActionName = actionName;
-        BeatsPerMeasure = beatsPerMeasure;
-        GenerateBeats();
-    } */
+    private TurnBasedActor _actor;
 
     public override void _Ready()
     {
         base._Ready();
-        GenerateBeats();
+
+        _actor = GetParent<TurnBasedActor>();
         _audioPlayer = new AudioStreamPlayer();
         AddChild(_audioPlayer);
         _audioPlayer.Stream = _soundEffect;
+
+        GenerateBeats();
     }
 
     private void GenerateBeats()
@@ -58,11 +50,6 @@ public class TurnAction : Node
         }
     }
 
-    private void ParseBeatString()
-    {
-
-    }
-
     public void RefreshBeats()
     {
         BeatsToPlay = new List<float>(_beats);
@@ -71,8 +58,13 @@ public class TurnAction : Node
     // What happens each time a beat is executed! Animation, sounds etc.
     public void PlayBeat()
     {
-        // GD.Print($"*{Name}*");
         _audioPlayer.Play();
+        _actor.PopupText("" + DamagePerHit);
+        if (AnimationName != null)
+        {
+            _actor.GetNode<AnimatedSprite>("AnimatedSprite").Animation = AnimationName;
+            _actor.GetNode<AnimatedSprite>("AnimatedSprite").Play();
+        }
     }
 
     public override String ToString()

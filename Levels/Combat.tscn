@@ -1,62 +1,53 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Objects/Actors/TurnBased/TBEnemy.cs" type="Script" id=1]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnQueue.cs" type="Script" id=2]
-[ext_resource path="res://Objects/Actors/TurnBased/TurnBasedPlayer.cs" type="Script" id=3]
+[ext_resource path="res://Objects/Actors/TurnBased/Actions/Kick.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnAction.cs" type="Script" id=4]
-[ext_resource path="res://Sounds/KickSound.wav" type="AudioStream" id=5]
-[ext_resource path="res://Sounds/TriangleSound.wav" type="AudioStream" id=6]
-[ext_resource path="res://Sounds/KickDrum.wav" type="AudioStream" id=7]
+[ext_resource path="res://Objects/Actors/TurnBased/PlayerCharacter.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Objects/Actors/TurnBased/Actions/Punch.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Objects/Actors/TurnBased/Actions/Slash.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Sprites/icon.png" type="Texture" id=8]
 
-[node name="TurnQueue" type="Node2D"]
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 8 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="TurnQueue" type="Node2D" parent="."]
 script = ExtResource( 2 )
 
-[node name="Player1" type="Node2D" parent="."]
-script = ExtResource( 3 )
+[node name="Player1" parent="TurnQueue" instance=ExtResource( 5 )]
+position = Vector2( -191, -99 )
+_defaultActions = [ ExtResource( 3 ), ExtResource( 6 ) ]
 
-[node name="Kick" type="Node" parent="Player1"]
-script = ExtResource( 4 )
-BeatsPerMeasure = 8
-_soundEffect = ExtResource( 5 )
-_beatPattern = "xxxxxxx-"
+[node name="Player2" parent="TurnQueue" instance=ExtResource( 5 )]
+position = Vector2( -195, 87 )
+_defaultActions = [ ExtResource( 7 ) ]
 
-[node name="Wait" type="Node" parent="Player1"]
-script = ExtResource( 4 )
-
-[node name="Player2" type="Node2D" parent="."]
-script = ExtResource( 3 )
-
-[node name="Punch" type="Node" parent="Player2"]
-script = ExtResource( 4 )
-BeatsPerMeasure = 4
-_soundEffect = ExtResource( 6 )
-_beatPattern = "-x-x"
-
-[node name="Wait" type="Node" parent="Player2"]
-script = ExtResource( 4 )
-
-[node name="Player3" type="Node2D" parent="."]
-script = ExtResource( 3 )
-
-[node name="Slash" type="Node" parent="Player3"]
-script = ExtResource( 4 )
-BeatsPerMeasure = 4
-_soundEffect = ExtResource( 7 )
-_beatPattern = "xxxx"
-
-[node name="Wait" type="Node" parent="Player3"]
-script = ExtResource( 4 )
-
-[node name="Enemy1" type="Node2D" parent="."]
+[node name="Enemy1" type="Node2D" parent="TurnQueue"]
+position = Vector2( 200, 0 )
 script = ExtResource( 1 )
 IsEnemy = true
 
-[node name="Attack1" type="Node" parent="Enemy1"]
+[node name="Attack1" type="Node" parent="TurnQueue/Enemy1"]
 script = ExtResource( 4 )
 BeatsPerMeasure = 4
 _beatPattern = "x---"
 
-[node name="Attack2" type="Node" parent="Enemy1"]
+[node name="Attack2" type="Node" parent="TurnQueue/Enemy1"]
 script = ExtResource( 4 )
 BeatsPerMeasure = 4
 _beatPattern = "--x-"
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="TurnQueue/Enemy1"]
+frames = SubResource( 1 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+visible = false
+current = true
