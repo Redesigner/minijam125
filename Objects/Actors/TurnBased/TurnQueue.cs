@@ -133,26 +133,25 @@ public class TurnQueue : Node2D
     {
         foreach (TurnBasedActor turnBasedActor in _heroes)
         {
-            _actionSelector.SetActionList(turnBasedActor.GetActions());
+            GD.Print($"\n{turnBasedActor.Name}'s turn!");
+
+            _actionSelector.Visible = true;
+            _actionSelector.CallDeferred("SetActionList", turnBasedActor.GetActions());
             _actionSelector.SetFocus(true);
-            // turnBasedActor.CallDeferred("SetActionForTurn");
-            // await ToSignal(turnBasedActor, "ActionReady");
             await ToSignal(_actionSelector, "ActionReady");
             _actionSelector.SetFocus(false);
             _actionSelector.ClearSelection();
-            turnBasedActor.SetUpcomingAction(_actionSelector.GetSelectedAction());
-            // turnBasedActor.SetAvailableTargets(GetTargets(true));
-            // turnBasedActor.CallDeferred("SetTargetForTurn");
-            // await ToSignal(turnBasedActor, "TargetReady");
 
+            turnBasedActor.SetUpcomingAction(_actionSelector.GetSelectedAction());
             _targetSelector.SetTargetList(GetTargets(true));
             await ToSignal(_targetSelector, "TargetSelected");
-            GD.Print("TurnQueue received target selecction");
+
+            GD.Print("TurnQueue received target selection");
 
             turnBasedActor.GetUpcomingAction().Target = _targetSelector.GetSelected();
             turnBasedActor.GetUpcomingAction().RefreshBeats();
         }
-
+        _actionSelector.Visible = false;
         ExecuteActions();
     }
 

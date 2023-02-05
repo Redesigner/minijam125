@@ -2,10 +2,15 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class TargetSelector : ColorRect
+public class TargetSelector : Panel
 {
     [Export] private NodePath _cursorPath;
     private Control _cursor;
+
+    [Export] private AudioStream _cursorSound;
+    [Export] private AudioStream _confirmSound;
+    private AudioStreamPlayer _audioStreamPlayer;
+    private AudioStreamPlayer _confirmSoundPlayer;
 
     private Godot.Collections.Array<TurnBasedActor> _targets;
     private int _selectionIndex;
@@ -14,6 +19,15 @@ public class TargetSelector : ColorRect
 
     public override void _Ready()
     {
+        _audioStreamPlayer = new AudioStreamPlayer();
+        AddChild(_audioStreamPlayer);
+
+        _confirmSoundPlayer = new AudioStreamPlayer();
+        AddChild(_confirmSoundPlayer);
+
+        _audioStreamPlayer.Stream = _cursorSound;
+        _confirmSoundPlayer.Stream = _confirmSound;
+
         _cursor = GetNode<Control>(_cursorPath);
         Visible = false;
     }
@@ -50,7 +64,7 @@ public class TargetSelector : ColorRect
         }
         else if (@event.IsActionPressed("ui_select"))
         {
-            GD.Print("target selected");
+            _confirmSoundPlayer.Play();
             HideCursor();
             EmitSignal("TargetSelected");
         }
@@ -75,11 +89,12 @@ public class TargetSelector : ColorRect
 
     private void SetCursorPosition(int listIndex)
     {
+        _audioStreamPlayer.Play();
         TurnBasedActor target = _targets[listIndex];
         AnimatedSprite sprite = target.GetNode<AnimatedSprite>("AnimatedSprite");
 
-        _cursor.RectGlobalPosition = sprite.GlobalPosition;
         _cursor.RectSize = sprite.Frames.GetFrame("default", 0).GetSize();
+        _cursor.RectGlobalPosition = sprite.GlobalPosition - _cursor.RectSize / 2.0f;
     }
 
     private void HideCursor()

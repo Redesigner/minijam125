@@ -5,6 +5,10 @@
 
 [node name="Kick" type="Node"]
 script = ExtResource( 2 )
+__meta__ = {
+"_editor_description_": ""
+}
+Description = "Hits an enemy rapidly for low damage."
 BeatsPerMeasure = 8
 _soundEffect = ExtResource( 1 )
 _beatPattern = "xxxxxxxx"

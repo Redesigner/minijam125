@@ -1,14 +1,18 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://UI/Styles/DefaultTheme.tres" type="Theme" id=1]
-[ext_resource path="res://UI/Elements/ActionSelector.cs" type="Script" id=2]
-[ext_resource path="res://UI/Elements/ActionDescription.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/Elements/ActionSelector/ActionSelector.cs" type="Script" id=2]
+[ext_resource path="res://UI/Elements/ActionDescription/ActionDescription.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Sounds/UI/blipSelect.wav" type="AudioStream" id=4]
+[ext_resource path="res://Sounds/UI/blipConfirm.wav" type="AudioStream" id=5]
 
 [node name="Panel" type="Panel"]
 margin_right = 600.0
 margin_bottom = 350.0
 theme = ExtResource( 1 )
 script = ExtResource( 2 )
+_cursorSound = ExtResource( 4 )
+_confirmSound = ExtResource( 5 )
 
 [node name="Tree" type="Tree" parent="."]
 anchor_right = 1.0

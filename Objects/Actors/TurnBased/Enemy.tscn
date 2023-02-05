@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Objects/Actors/TurnBased/TBEnemy.cs" type="Script" id=1]
+[ext_resource path="res://Objects/Actors/TurnBased/TurnAction.cs" type="Script" id=2]
+[ext_resource path="res://Sprites/icon.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Enemy1" type="Node2D"]
+position = Vector2( 200, 0 )
+script = ExtResource( 1 )
+IsEnemy = true
+
+[node name="Attack1" type="Node" parent="."]
+script = ExtResource( 2 )
+BeatsPerMeasure = 4
+_beatPattern = "x---"
+
+[node name="Attack2" type="Node" parent="."]
+script = ExtResource( 2 )
+BeatsPerMeasure = 4
+_beatPattern = "--x-"
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )

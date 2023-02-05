@@ -1,0 +1,16 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Sprites/Heroes/Knight/knight.tres" type="SpriteFrames" id=1]
+[ext_resource path="res://Objects/Actors/TurnBased/Actions/Slash.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Objects/Actors/TurnBased/TurnBasedPlayer.cs" type="Script" id=3]
+[ext_resource path="res://Objects/Actors/TurnBased/Actions/Wait.tscn" type="PackedScene" id=4]
+
+[node name="Knight" type="Node2D"]
+script = ExtResource( 3 )
+_defaultActions = [ ExtResource( 2 ), ExtResource( 4 ) ]
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 2, 2 )
+frames = ExtResource( 1 )
+
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="SetIdle"]

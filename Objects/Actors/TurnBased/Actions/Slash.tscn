@@ -5,6 +5,7 @@
 
 [node name="Slash" type="Node"]
 script = ExtResource( 2 )
+Description = "Hits an enemy on the beat for medium damage."
 BeatsPerMeasure = 4
 _soundEffect = ExtResource( 1 )
 _beatPattern = "xxxx"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Objects/Actors/TurnBased/TBEnemy.cs" type="Script" id=1]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnQueue.cs" type="Script" id=2]
@@ -8,8 +8,12 @@
 [ext_resource path="res://Objects/Actors/TurnBased/Actions/Punch.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Objects/Actors/TurnBased/Actions/Slash.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Sprites/icon.png" type="Texture" id=8]
-[ext_resource path="res://UI/Elements/ActionSelector.tscn" type="PackedScene" id=9]
-[ext_resource path="res://UI/Elements/TargetSelector.tscn" type="PackedScene" id=10]
+[ext_resource path="res://UI/Elements/ActionSelector/ActionSelector.tscn" type="PackedScene" id=9]
+[ext_resource path="res://UI/Elements/TargetSelector/TargetSelector.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Objects/Actors/TurnBased/Actions/Wait.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Objects/Actors/TurnBased/InstancedCharacters/Knight.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Objects/Actors/TurnBased/InstancedCharacters/Mage.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Objects/Actors/TurnBased/Enemy.tscn" type="PackedScene" id=14]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -23,34 +27,38 @@ animations = [ {
 
 [node name="TurnQueue" type="Node2D" parent="."]
 script = ExtResource( 2 )
-BPM = 80
+BPM = 140
 _actionSelectorPath = NodePath("../Panel")
 _targetSelectorPath = NodePath("../Control")
 
 [node name="Player1" parent="TurnQueue" instance=ExtResource( 5 )]
 position = Vector2( -360, -136 )
-_defaultActions = [ ExtResource( 3 ), ExtResource( 6 ), ExtResource( 7 ) ]
+_defaultActions = [ ExtResource( 3 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 11 ) ]
 
-[node name="Player2" parent="TurnQueue" instance=ExtResource( 5 )]
-position = Vector2( -375, -8 )
-_defaultActions = [ ExtResource( 3 ) ]
+[node name="Mage" parent="TurnQueue" instance=ExtResource( 13 )]
+position = Vector2( -406, -44 )
 
-[node name="Enemy1" type="Node2D" parent="TurnQueue"]
-position = Vector2( 200, 0 )
+[node name="Knight" parent="TurnQueue" instance=ExtResource( 12 )]
+position = Vector2( -304, 59 )
+
+[node name="Enemy1" parent="TurnQueue" instance=ExtResource( 14 )]
+
+[node name="Enemy2" type="Node2D" parent="TurnQueue"]
+position = Vector2( 200, -100 )
 script = ExtResource( 1 )
 IsEnemy = true
 
-[node name="Attack1" type="Node" parent="TurnQueue/Enemy1"]
+[node name="Attack1" type="Node" parent="TurnQueue/Enemy2"]
 script = ExtResource( 4 )
 BeatsPerMeasure = 4
 _beatPattern = "x---"
 
-[node name="Attack2" type="Node" parent="TurnQueue/Enemy1"]
+[node name="Attack2" type="Node" parent="TurnQueue/Enemy2"]
 script = ExtResource( 4 )
 BeatsPerMeasure = 4
 _beatPattern = "--x-"
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="TurnQueue/Enemy1"]
+[node name="AnimatedSprite" type="AnimatedSprite" parent="TurnQueue/Enemy2"]
 frames = SubResource( 1 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -58,7 +66,7 @@ current = true
 
 [node name="Panel" parent="." instance=ExtResource( 9 )]
 margin_left = -511.0
-margin_top = 53.0
+margin_top = 125.0
 margin_right = 41.0
 margin_bottom = 287.0
 

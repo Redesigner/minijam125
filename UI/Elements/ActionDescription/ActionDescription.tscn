@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Fonts/Nunito-Regular-16.tres" type="DynamicFont" id=1]
+[ext_resource path="res://UI/Elements/ActionDescription/ActionDescription.cs" type="Script" id=2]
+[ext_resource path="res://UI/Styles/DefaultTheme.tres" type="Theme" id=3]
+
+[node name="Popup" type="Control"]
+margin_right = 468.0
+margin_bottom = 289.0
+theme = ExtResource( 3 )
+script = ExtResource( 2 )
+_titlePath = NodePath("GradientFill/NameLabel")
+_descriptionPath = NodePath("GradientFill/ColorRect/DescriptionLabel")
+
+[node name="GradientFill" type="Panel" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 3 )
+
+[node name="NameLabel" type="Label" parent="GradientFill"]
+margin_left = 10.0
+margin_top = 10.0
+text = "Punch"
+
+[node name="ColorRect" type="ColorRect" parent="GradientFill"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 60.0
+margin_right = -10.0
+margin_bottom = -10.0
+color = Color( 0.113373, 0.105743, 0.117188, 1 )
+
+[node name="DescriptionLabel" type="Label" parent="GradientFill/ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
+custom_fonts/font = ExtResource( 1 )
+text = "The punch attack does stuff to the enemy."
+autowrap = true

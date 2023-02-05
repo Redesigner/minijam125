@@ -137,10 +137,11 @@ public class TurnBasedActor : Node2D
     {
         TextPopup popup = (TextPopup) _textPopupScene.Instance();
         popup.SetText(text);
-        AddChild(popup);
+        GetTree().Root.AddChild(popup);
         Vector2 spriteSize = _sprite.Frames.GetFrame("default", 0).GetSize();
         Vector2 textSize = popup.GetNode<Label>("Label").RectSize;
-        popup.RectPosition = new Vector2(-textSize.x / 2.0f, -textSize.y - spriteSize.y / 2.0f);
+        // popup.RectPosition = new Vector2(-textSize.x / 2.0f, -textSize.y - spriteSize.y / 2.0f);
+        popup.RectGlobalPosition = _sprite.GlobalPosition -  new Vector2(textSize.x / 2.0f, textSize.y + spriteSize.y / 2.0f);
     }
 
     public List<TurnAction> GetActions()
