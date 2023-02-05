@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Objects/Actors/TurnBased/TBEnemy.cs" type="Script" id=1]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnQueue.cs" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Objects/Actors/TurnBased/Actions/Slash.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Sprites/icon.png" type="Texture" id=8]
 [ext_resource path="res://UI/Elements/ActionSelector.tscn" type="PackedScene" id=9]
+[ext_resource path="res://UI/Elements/TargetSelector.tscn" type="PackedScene" id=10]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -24,6 +25,7 @@ animations = [ {
 script = ExtResource( 2 )
 BPM = 80
 _actionSelectorPath = NodePath("../Panel")
+_targetSelectorPath = NodePath("../Control")
 
 [node name="Player1" parent="TurnQueue" instance=ExtResource( 5 )]
 position = Vector2( -360, -136 )
@@ -59,3 +61,9 @@ margin_left = -511.0
 margin_top = 53.0
 margin_right = 41.0
 margin_bottom = 287.0
+
+[node name="Control" parent="." instance=ExtResource( 10 )]
+margin_left = -511.0
+margin_top = -288.0
+margin_right = -211.0
+margin_bottom = -211.0

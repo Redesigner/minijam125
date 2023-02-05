@@ -90,6 +90,9 @@ public class ActionSelector : Panel
 
     public void ClearSelection()
     {
-        _listView.GetSelected().Deselect(0);
+        if (_listView.GetSelected() != null)
+        {
+            _listView.GetSelected().Deselect(0);
+        }
     }
 }

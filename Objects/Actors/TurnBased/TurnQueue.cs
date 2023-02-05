@@ -19,10 +19,15 @@ public class TurnQueue : Node2D
     [Export] private NodePath _actionSelectorPath;
     private ActionSelector _actionSelector;
 
+    [Export] private NodePath _targetSelectorPath;
+    private TargetSelector _targetSelector;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         _actionSelector = GetNode<ActionSelector>(_actionSelectorPath);
+        _targetSelector = GetNode<TargetSelector>(_targetSelectorPath);
+
         _bpmTimeRatio = (float) BPM / 60.0f;
         GD.Print("Press 'Space' to begin your turn.");
 
@@ -136,11 +141,15 @@ public class TurnQueue : Node2D
             _actionSelector.SetFocus(false);
             _actionSelector.ClearSelection();
             turnBasedActor.SetUpcomingAction(_actionSelector.GetSelectedAction());
-            turnBasedActor.SetAvailableTargets(GetTargets(true));
-            turnBasedActor.CallDeferred("SetTargetForTurn");
-            await ToSignal(turnBasedActor, "TargetReady");
+            // turnBasedActor.SetAvailableTargets(GetTargets(true));
+            // turnBasedActor.CallDeferred("SetTargetForTurn");
+            // await ToSignal(turnBasedActor, "TargetReady");
 
-            turnBasedActor.GetUpcomingAction().Target = turnBasedActor.GetPendingTarget();
+            _targetSelector.SetTargetList(GetTargets(true));
+            await ToSignal(_targetSelector, "TargetSelected");
+            GD.Print("TurnQueue received target selecction");
+
+            turnBasedActor.GetUpcomingAction().Target = _targetSelector.GetSelected();
             turnBasedActor.GetUpcomingAction().RefreshBeats();
         }
 

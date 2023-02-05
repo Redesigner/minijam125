@@ -7,5 +7,5 @@
 script = ExtResource( 2 )
 BeatsPerMeasure = 8
 _soundEffect = ExtResource( 1 )
-_beatPattern = "xxxxxxx-"
+_beatPattern = "xxxxxxxx"
 AnimationName = "attack"
