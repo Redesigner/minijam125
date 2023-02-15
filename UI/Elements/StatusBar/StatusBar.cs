@@ -37,12 +37,4 @@ public class StatusBar : Panel
         }
         _playerStatuses.Clear();
     }
-
-    public void UpdateDisplay()
-    {
-        foreach (PlayerStatus status in _playerStatuses)
-        {
-            status.UpdateDisplay();
-        }
-    }
 }

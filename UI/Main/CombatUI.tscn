@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://UI/Main/CombatUI.cs" type="Script" id=1]
+[ext_resource path="res://UI/Elements/StatusBar/StatusBar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/Elements/ActionSelector/ActionSelector.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/Elements/TargetSelector/TargetSelector.tscn" type="PackedScene" id=4]
+
+[node name="CombatUI" type="Control"]
+margin_right = 1024.0
+margin_bottom = 576.0
+script = ExtResource( 1 )
+_statusBarPath = NodePath("StatusBar")
+_actionSelectorPath = NodePath("ActionSelector")
+_targetSelectorPath = NodePath("TargetSelector")
+
+[node name="StatusBar" parent="." instance=ExtResource( 2 )]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 20.0
+margin_top = 356.0
+margin_right = -404.0
+margin_bottom = -20.0
+
+[node name="ActionSelector" parent="." instance=ExtResource( 3 )]
+margin_left = 117.0
+margin_top = 356.0
+margin_right = 644.0
+margin_bottom = 556.0
+
+[node name="TargetSelector" parent="." instance=ExtResource( 4 )]

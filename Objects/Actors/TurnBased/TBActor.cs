@@ -13,7 +13,6 @@ public class TBActor : Node2D
     private int _health = 100;
 
     protected List<TBAction> _availableActions = new List<TBAction>();
-    protected Godot.Collections.Array<TBActor> _availableTargets = new Godot.Collections.Array<TBActor>();
 
     private AnimatedSprite _sprite;
 
@@ -25,7 +24,7 @@ public class TBActor : Node2D
 
 
     [Signal] public delegate void ActionReady();
-    [Signal] public delegate void TargetReady();
+    [Signal] public delegate void HealthChanged(int oldHealth, int newHealth);
 
     public override void _Ready()
     {
@@ -36,7 +35,12 @@ public class TBActor : Node2D
 
         PopulateActionsFromArray();
         PopulateActionsFromChildNodes();
-        _pendingAction = _availableActions[0];
+    }
+
+    public void ClearPreviousTurn()
+    {
+        _pendingAction = null;
+        _pendingTarget = null;
     }
 
     private void PopulateActionsFromArray()
@@ -66,15 +70,21 @@ public class TBActor : Node2D
         }
     }
 
-    public virtual void ChooseAction()
+    public void SetPendingAction(TBAction action)
     {
+        _pendingAction = action;
         EmitSignal("ActionReady");
     }
 
-    public virtual void ChooseTarget(Godot.Collections.Array<TBActor> targets)
+    public TBAction GetPendingAction()
     {
-        _availableTargets = targets;
-        EmitSignal("TargetReady");
+        return _pendingAction;
+    }
+
+    public void SetPendingTarget(TBActor target)
+    {
+        _pendingTarget = target;
+        EmitSignal("ActionReady");
     }
 
     public TBActor GetPendingTarget()
@@ -92,19 +102,19 @@ public class TBActor : Node2D
         _sprite.Play();
     }
 
-    public void SetUpcomingAction(TBAction action)
+    public bool IsReady()
     {
-        _pendingAction = action;
-    }
-
-    public void SetUpcomingTarget(TBActor target)
-    {
-        _pendingTarget = target;
-    }
-
-    public TBAction GetUpcomingAction()
-    {
-        return _pendingAction;
+        if (_pendingAction == null)
+        {
+            GD.Print($"Actor {Name} is not ready -- they don't have an action chosen.");
+            return false;
+        }
+        if (_pendingAction.RequiresTarget() && _pendingTarget == null)
+        {
+            GD.Print($"Actor {Name} is not ready -- their current action requires a target, but they haven't chosen one.");
+            return false;
+        }
+        return true;
     }
 
     public bool TakeAllIncomingDamage()
@@ -144,9 +154,9 @@ public class TBActor : Node2D
         {
             default: return 0;
             case 1: return 1;
-            case 2: return 4;
-            case 3: return 8;
-            case 4: return 16;
+            case 2: return 2;
+            case 3: return 4;
+            case 4: return 8;
         }
     }
 
@@ -173,6 +183,7 @@ public class TBActor : Node2D
     /// returns true if the actor is still alive after taking damage
     private bool TakeDamage(int damage)
     {
+        int oldHealth = _health;
         if (_health > _maxHealth)
         {
             _health = _maxHealth;
@@ -180,11 +191,13 @@ public class TBActor : Node2D
         if (_health <= damage)
         {
             _health = 0;
+            EmitSignal("HealthChanged", oldHealth, 0);
             return false;
         }
         else
         {
             _health -= damage;
+            EmitSignal("HealthChanged", oldHealth, _health);
             return true;
         }
     }

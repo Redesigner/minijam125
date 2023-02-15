@@ -6,7 +6,7 @@
 [ext_resource path="res://Sounds/UI/blipSelect.wav" type="AudioStream" id=4]
 [ext_resource path="res://Sounds/UI/blipConfirm.wav" type="AudioStream" id=5]
 
-[node name="Panel" type="Panel"]
+[node name="ActionSelector" type="Panel"]
 margin_right = 600.0
 margin_bottom = 350.0
 theme = ExtResource( 1 )

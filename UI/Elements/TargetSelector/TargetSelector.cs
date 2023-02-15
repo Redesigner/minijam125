@@ -9,6 +9,9 @@ public class TargetSelector : Panel
 
     [Export] private AudioStream _cursorSound;
     [Export] private AudioStream _confirmSound;
+
+    private TBPlayer _player;
+
     private AudioStreamPlayer _audioStreamPlayer;
     private AudioStreamPlayer _confirmSoundPlayer;
 
@@ -62,12 +65,15 @@ public class TargetSelector : Panel
             }
             SetCursorPosition(_selectionIndex);
         }
-        else if (@event.IsActionPressed("ui_select"))
+        else if (@event.IsActionPressed("ui_select") && Visible)
         {
-            _confirmSoundPlayer.Play();
-            HideCursor();
-            EmitSignal("TargetSelected");
+            ConfirmTarget();
         }
+    }
+
+    public void SetPlayer(TBPlayer player)
+    {
+        _player = player;
     }
 
     public void SetTargetList(Godot.Collections.Array<TBActor> targets)
@@ -101,5 +107,19 @@ public class TargetSelector : Panel
     {
         GD.Print("Hiding target selector");
         Visible = false;
+    }
+
+    public void Focus()
+    {
+        SetCursorPosition(0);
+        GrabFocus();
+    }
+
+    private void ConfirmTarget()
+    {
+        _confirmSoundPlayer.Play();
+        HideCursor();
+        _player.SetPendingTarget(_targets[_selectionIndex]);
+        EmitSignal("TargetSelected");
     }
 }

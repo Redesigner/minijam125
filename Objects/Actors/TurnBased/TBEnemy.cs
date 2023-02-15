@@ -21,16 +21,13 @@ public class TBEnemy : TBActor
         }
     }
 
-    public override void ChooseAction()
+    public void ChooseAction()
     {
-        int randomActionIndex = _random.RandiRange(0, _availableActions.Count - 1);
-        SetUpcomingAction(_availableActions[randomActionIndex]);
+        SetPendingAction(_availableActions[_random.RandiRange(0, _availableActions.Count - 1)]);
     }
 
-    public override void ChooseTarget(Array<TBActor> targets)
+    public void ChooseTarget(Godot.Collections.Array<TBActor> actorList)
     {
-        _availableTargets = targets;
-        int randomActionIndex = _random.RandiRange(0, targets.Count - 1);
-        SetUpcomingTarget(_availableTargets[randomActionIndex]);
+        SetPendingTarget(actorList[_random.RandiRange(0, actorList.Count - 1)]);
     }
 }

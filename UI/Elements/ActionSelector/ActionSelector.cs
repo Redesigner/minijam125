@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class ActionSelector : Panel
 {
-    [Signal] delegate void ActionReady();
     private Tree _listView;
     private TreeItem _root;
     private ActionDescription _popup;
@@ -18,6 +17,10 @@ public class ActionSelector : Panel
     [Export] private AudioStream _confirmSound;
     private AudioStreamPlayer _audioStreamPlayer;
     private AudioStreamPlayer _confirmSoundPlayer;
+
+    private TBPlayer _player;
+
+    [Signal] private delegate void ActionSelected(TBPlayer playerSelectedFor);
 
     public override void _Ready()
     {
@@ -46,15 +49,9 @@ public class ActionSelector : Panel
         {
             return;
         }
-        if (@event.IsActionPressed("ui_select"))
+        if (@event.IsActionPressed("ui_select") && Visible)
         {
-            if (_selectedAction == null)
-            {
-                return;
-            }
-            GD.Print("Action selected");
-            _confirmSoundPlayer.Play();
-            EmitSignal("ActionReady");
+            ConfirmAction();
         }
     }
 
@@ -84,6 +81,18 @@ public class ActionSelector : Panel
         _popup.Visible = false;
     }
 
+    public void Focus()
+    {
+        _listView.FocusMode = FocusModeEnum.All;
+        _listView.GrabFocus();
+    }
+
+    public void Unfocus()
+    {
+        _listView.FocusMode = FocusModeEnum.None;
+        _listView.ReleaseFocus();
+    }
+
     private TBAction GetTurnActionByName(String name)
     {
         foreach (TBAction action in _actionList)
@@ -96,28 +105,10 @@ public class ActionSelector : Panel
         return null;
     }
 
-    public void SetActionList(List<TBAction> actionList)
+    private void SetActionList(List<TBAction> actionList)
     {
         _actionList = actionList;
         PopulateTree();
-    }
-
-    public TBAction GetSelectedAction()
-    {
-        _awaitingInput = false;
-        return _selectedAction;
-    }
-
-    public void SetFocus(bool focused)
-    {
-        if (focused)
-        {
-            _listView.GrabFocus();
-        }
-        else
-        {
-            _listView.ReleaseFocus();
-        }
     }
 
     public void ClearSelection()
@@ -126,10 +117,24 @@ public class ActionSelector : Panel
         {
             _listView.GetSelected().Deselect(0);
         }
+        _popup.Visible = false;
     }
 
-    public void SetActorName(string actorName)
+    public void SetPlayer(TBPlayer player)
     {
-        _actorNameLabel.Text = actorName;
+        _player = player;
+        SetActionList(player.GetActions());
+        _actorNameLabel.Text = player.Name;
+    }
+
+    private void ConfirmAction()
+    {
+        if (_selectedAction == null)
+        {
+            return;
+        }
+        _confirmSoundPlayer.Play();
+        _player.SetPendingAction(_selectedAction);
+        EmitSignal("ActionSelected", _player);
     }
 }

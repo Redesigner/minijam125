@@ -12,6 +12,9 @@ public class TBAction : Node
     [Export] public int DamagePerHit = 1;
     [Export] public String AnimationName;
 
+    [Export] private bool _requiresTarget = true;
+    [Export] private bool _targetAllies = false;
+
     private List<float> _beats;
     public List<float> BeatsToPlay = new List<float>();
 
@@ -50,6 +53,16 @@ public class TBAction : Node
         }
     }
 
+    public bool RequiresTarget()
+    {
+        return _requiresTarget;
+    }
+
+    public bool TargetAllies()
+    {
+        return _targetAllies;
+    }
+
     public void RefreshBeats()
     {
         BeatsToPlay = new List<float>(_beats);
@@ -58,6 +71,7 @@ public class TBAction : Node
     // What happens each time a beat is executed! Animation, sounds etc.
     public void PlayBeat()
     {
+        _actor.GetPendingTarget().AccumulateDamage(DamagePerHit);
         _audioPlayer.Play();
         if (AnimationName != null)
         {
