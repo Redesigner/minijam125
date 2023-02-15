@@ -3,7 +3,7 @@
 [ext_resource path="res://Sounds/TriangleSound.wav" type="AudioStream" id=1]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnAction.cs" type="Script" id=2]
 
-[node name="Punch" type="Node"]
+[node name="Lightning" type="Node"]
 script = ExtResource( 2 )
 Description = "Hits an enemy occasionally for high damage."
 BeatsPerMeasure = 4

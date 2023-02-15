@@ -1,10 +1,10 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 
-public class TBEnemy : TurnBasedActor
+public class TBEnemy : TBActor
 {
-    private List<TurnAction> _availableActions = new List<TurnAction>();
     private RandomNumberGenerator _random = new RandomNumberGenerator();
 
     public override void _Ready()
@@ -12,22 +12,25 @@ public class TBEnemy : TurnBasedActor
         base._Ready();
 
         _random.Randomize();
-
         foreach (Node node in GetChildren())
         {
-            if(node is TurnAction)
+            if(node is TBAction)
             {
-                _availableActions.Add((TurnAction)node);
+                _availableActions.Add((TBAction)node);
             }
         }
     }
 
-    public override void SetActionForTurn()
+    public override void ChooseAction()
     {
         int randomActionIndex = _random.RandiRange(0, _availableActions.Count - 1);
-        GD.Print("random index: " + randomActionIndex);
-        GD.Print($"{Name} chose action: {_availableActions[randomActionIndex].Name} out of {_availableActions.Count} possible actions");
         SetUpcomingAction(_availableActions[randomActionIndex]);
-        EmitSignal("ActionReady");
+    }
+
+    public override void ChooseTarget(Array<TBActor> targets)
+    {
+        _availableTargets = targets;
+        int randomActionIndex = _random.RandiRange(0, targets.Count - 1);
+        SetUpcomingTarget(_availableTargets[randomActionIndex]);
     }
 }

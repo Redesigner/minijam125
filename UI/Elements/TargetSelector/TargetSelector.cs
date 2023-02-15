@@ -12,7 +12,7 @@ public class TargetSelector : Panel
     private AudioStreamPlayer _audioStreamPlayer;
     private AudioStreamPlayer _confirmSoundPlayer;
 
-    private Godot.Collections.Array<TurnBasedActor> _targets;
+    private Godot.Collections.Array<TBActor> _targets;
     private int _selectionIndex;
 
     [Signal] public delegate void TargetSelected();
@@ -70,7 +70,7 @@ public class TargetSelector : Panel
         }
     }
 
-    public void SetTargetList(Godot.Collections.Array<TurnBasedActor> targets)
+    public void SetTargetList(Godot.Collections.Array<TBActor> targets)
     {
         _targets = targets;
         if (targets.Count > 0)
@@ -82,7 +82,7 @@ public class TargetSelector : Panel
         }
     }
 
-    public TurnBasedActor GetSelected()
+    public TBActor GetSelected()
     {
         return _targets[_selectionIndex];
     }
@@ -90,7 +90,7 @@ public class TargetSelector : Panel
     private void SetCursorPosition(int listIndex)
     {
         _audioStreamPlayer.Play();
-        TurnBasedActor target = _targets[listIndex];
+        TBActor target = _targets[listIndex];
         AnimatedSprite sprite = target.GetNode<AnimatedSprite>("AnimatedSprite");
 
         _cursor.RectSize = sprite.Frames.GetFrame("default", 0).GetSize();

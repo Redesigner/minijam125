@@ -3,7 +3,7 @@
 [ext_resource path="res://Sounds/KickSound.wav" type="AudioStream" id=1]
 [ext_resource path="res://Objects/Actors/TurnBased/TurnAction.cs" type="Script" id=2]
 
-[node name="Kick" type="Node"]
+[node name="Static" type="Node"]
 script = ExtResource( 2 )
 __meta__ = {
 "_editor_description_": ""

@@ -9,7 +9,7 @@ public class ActionDescription : Control
     private Label _title;
     private Label _description;
 
-    private TurnAction _associatedAction;
+    private TBAction _associatedAction;
 
     public override void _Ready()
     {
@@ -17,7 +17,7 @@ public class ActionDescription : Control
         _description = GetNode<Label>(_descriptionPath);
     }
 
-    public void SetAction(TurnAction action)
+    public void SetAction(TBAction action)
     {
         _title.Text = action.Name;
         _description.Text = action.Description;

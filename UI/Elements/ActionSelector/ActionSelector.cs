@@ -10,8 +10,9 @@ public class ActionSelector : Panel
     private ActionDescription _popup;
     private bool _awaitingInput = false;
 
-    private List<TurnAction> _actionList = new List<TurnAction>();
-    private TurnAction _selectedAction;
+    private List<TBAction> _actionList = new List<TBAction>();
+    private Label _actorNameLabel;
+    private TBAction _selectedAction;
 
     [Export] private AudioStream _cursorSound;
     [Export] private AudioStream _confirmSound;
@@ -29,11 +30,14 @@ public class ActionSelector : Panel
         _audioStreamPlayer.Stream = _cursorSound;
         _confirmSoundPlayer.Stream = _confirmSound;
 
+        _actorNameLabel = GetNode<Label>("Panel/Label");
+
         _listView = GetNode<Tree>("Tree");
         _popup = GetNode<ActionDescription>("Popup");
         _root = _listView.CreateItem();
 
         _popup.Visible = false;
+        Visible = false;
     }
 
     public override void _Input(InputEvent @event)
@@ -60,7 +64,7 @@ public class ActionSelector : Panel
         _listView.Clear();
         _root = _listView.CreateItem();
         _selectedAction = null;
-        foreach (TurnAction entry in _actionList)
+        foreach (TBAction entry in _actionList)
         {
             TreeItem treeItem = _listView.CreateItem(_root);
             treeItem.SetText(0, entry.Name);
@@ -80,9 +84,9 @@ public class ActionSelector : Panel
         _popup.Visible = false;
     }
 
-    private TurnAction GetTurnActionByName(String name)
+    private TBAction GetTurnActionByName(String name)
     {
-        foreach (TurnAction action in _actionList)
+        foreach (TBAction action in _actionList)
         {
             if (action.Name == name)
             {
@@ -92,13 +96,13 @@ public class ActionSelector : Panel
         return null;
     }
 
-    public void SetActionList(List<TurnAction> actionList)
+    public void SetActionList(List<TBAction> actionList)
     {
         _actionList = actionList;
         PopulateTree();
     }
 
-    public TurnAction GetSelectedAction()
+    public TBAction GetSelectedAction()
     {
         _awaitingInput = false;
         return _selectedAction;
@@ -122,5 +126,10 @@ public class ActionSelector : Panel
         {
             _listView.GetSelected().Deselect(0);
         }
+    }
+
+    public void SetActorName(string actorName)
+    {
+        _actorNameLabel.Text = actorName;
     }
 }
